@@ -5,10 +5,26 @@ minetest.register_craft({
 	output = 'wooden_bucket:bucket_empty 1',
 	recipe = {
 		{'group:wood', '', 'group:wood'},
-		{'group:wood', '', 'group:wood'},
 		{'', 'group:wood', ''},
 	}
 })
+
+if minetest.get_modpath("ethereal") ~= nil then
+
+	if minetest.registered_items["farming:bowl"] then
+		minetest.register_craft({
+			output = 'farming:bowl 4',
+			recipe = {'wooden_bucket:bucket_empty'},
+			type = 'shapeless',
+		})
+	else 
+		minetest.register_craft({
+			output = 'ethereal:bowl 4',
+			recipe = {'wooden_bucket:bucket_empty'},
+			type = 'shapeless',
+		})
+	end
+end
 
 wooden_bucket = {}
 wooden_bucket.liquids = {}
