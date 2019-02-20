@@ -205,7 +205,7 @@ wooden_bucket.register_liquid(
 	"wooden_bucket:bucket_water",
 	"wooden_bucket_water.png",
 	"Water Bucket",
-	{water_bucket = 1}
+	{water_wooden_bucket = 1}
 )
 
 -- River water source is 'liquid_renewable = false' to avoid horizontal spread
@@ -220,7 +220,7 @@ wooden_bucket.register_liquid(
 	"wooden_bucket:bucket_river_water",
 	"wooden_bucket_river_water.png",
 	"River Water Bucket",
-	{water_bucket = 1},
+	{water_wooden_bucket = 1},
 	true
 )
 
