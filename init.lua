@@ -2,7 +2,7 @@
 -- See README.txt for licensing and other information.
 
 minetest.register_craft({
-	output = 'wooden_bucket:bucket_empty 1',
+	output = 'bucket_wooden:bucket_empty 1',
 	recipe = {
 		{'group:wood', '', 'group:wood'},
 		{'', 'group:wood', ''},
@@ -12,7 +12,7 @@ minetest.register_craft({
 if minetest.registered_items["farming:bowl"] then
 	minetest.register_craft({
 		output = 'farming:bowl 4',
-		recipe = {'wooden_bucket:bucket_empty'},
+		recipe = {'bucket_wooden:bucket_empty'},
 		type = 'shapeless',
 	})
 end
@@ -20,20 +20,20 @@ end
 if minetest.registered_items["ethereal:bowl"] then
 	minetest.register_craft({
 		output = 'ethereal:bowl 4',
-		recipe = {'wooden_bucket:bucket_empty'},
+		recipe = {'bucket_wooden:bucket_empty'},
 		type = 'shapeless',
 	})
 end
 
 minetest.register_craft({
 	type = "fuel",
-	recipe = "wooden_bucket:bucket_empty",
+	recipe = "bucket_wooden:bucket_empty",
 	burntime = 22,
 })
 
 
-wooden_bucket = {}
-wooden_bucket.liquids = {}
+bucket_wooden = {}
+bucket_wooden.liquids = {}
 
 local function check_protection(pos, name, text)
 	if minetest.is_protected(pos, name) then
@@ -59,15 +59,15 @@ end
 --                  source neighbour, even if defined as 'liquid_renewable = false'.
 --                  Needed to avoid creating holes in sloping rivers.
 -- This function can be called from any mod (that depends on bucket).
-function wooden_bucket.register_liquid(source, flowing, itemname, inventory_image, name,
+function bucket_wooden.register_liquid(source, flowing, itemname, inventory_image, name,
 		groups, force_renew)
-	wooden_bucket.liquids[source] = {
+	bucket_wooden.liquids[source] = {
 		source = source,
 		flowing = flowing,
 		itemname = itemname,
 		force_renew = force_renew,
 	}
-	wooden_bucket.liquids[flowing] = wooden_bucket.liquids[source]
+	bucket_wooden.liquids[flowing] = bucket_wooden.liquids[source]
 
 	if itemname ~= nil then
 		minetest.register_craftitem(itemname, {
@@ -123,15 +123,15 @@ function wooden_bucket.register_liquid(source, flowing, itemname, inventory_imag
 				end
 
 				minetest.set_node(lpos, {name = source})
-				return ItemStack("wooden_bucket:bucket_empty")
+				return ItemStack("bucket_wooden:bucket_empty")
 			end
 		})
 	end
 end
 
-minetest.register_craftitem("wooden_bucket:bucket_empty", {
+minetest.register_craftitem("bucket_wooden:bucket_empty", {
 	description = "Empty Wooden Bucket",
-	inventory_image = "wooden_bucket.png",
+	inventory_image = "bucket_wooden.png",
 	stack_max = 99,
 	liquids_pointable = true,
 	on_use = function(itemstack, user, pointed_thing)
@@ -144,7 +144,7 @@ minetest.register_craftitem("wooden_bucket:bucket_empty", {
 		end
 		-- Check if pointing to a liquid source
 		local node = minetest.get_node(pointed_thing.under)
-		local liquiddef = wooden_bucket.liquids[node.name]
+		local liquiddef = bucket_wooden.liquids[node.name]
 		local item_count = user:get_wielded_item():get_count()
 
 		if liquiddef ~= nil
@@ -173,7 +173,7 @@ minetest.register_craftitem("wooden_bucket:bucket_empty", {
 				end
 
 				-- set to return empty buckets minus 1
-				giving_back = "wooden_bucket:bucket_empty "..tostring(item_count-1)
+				giving_back = "bucket_wooden:bucket_empty "..tostring(item_count-1)
 
 			end
 
@@ -199,13 +199,13 @@ minetest.register_craftitem("wooden_bucket:bucket_empty", {
 	end,
 })
 
-wooden_bucket.register_liquid(
+bucket_wooden.register_liquid(
 	"default:water_source",
 	"default:water_flowing",
-	"wooden_bucket:bucket_water",
-	"wooden_bucket_water.png",
+	"bucket_wooden:bucket_water",
+	"bucket_wooden_water.png",
 	"Water Bucket",
-	{water_wooden_bucket = 1}
+	{water_bucket_wooden = 1}
 )
 
 -- River water source is 'liquid_renewable = false' to avoid horizontal spread
@@ -214,13 +214,13 @@ wooden_bucket.register_liquid(
 -- River water source is instead made renewable by the 'force renew' option
 -- used here.
 
-wooden_bucket.register_liquid(
+bucket_wooden.register_liquid(
 	"default:river_water_source",
 	"default:river_water_flowing",
-	"wooden_bucket:bucket_river_water",
-	"wooden_bucket_river_water.png",
+	"bucket_wooden:bucket_river_water",
+	"bucket_wooden_river_water.png",
 	"River Water Bucket",
-	{water_wooden_bucket = 1},
+	{water_bucket_wooden = 1},
 	true
 )
 
