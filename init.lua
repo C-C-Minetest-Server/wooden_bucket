@@ -1,6 +1,34 @@
 -- Minetest 0.4 mod: bucket
 -- See README.txt for licensing and other information.
 
+
+-- New recipes added for the right bowl.
+local eth = minetest.get_modpath("ethereal")
+local farm = minetest.get_modpath("farming") and farming and farming.mod -- as in mobs_animal, cow.lua
+
+-- ethereal uses recipe for farming:bowl if registered, see extra.lua.
+if farm and minetest.registered_items["farming:bowl"] then
+
+	minetest.clear_craft({ output = "farming:bowl" })
+
+	minetest.register_craft({
+		output = 'farming:bowl 4',
+		recipe = {'bucket_wooden:bucket_empty'},
+		type = 'shapeless',
+	})
+
+elseif eth and minetest.registered_items["ethereal:bowl"] then
+
+	minetest.clear_craft({ output = "ethereal:bowl" })
+
+	minetest.register_craft({
+		output = 'ethereal:bowl 4',
+		recipe = {'bucket_wooden:bucket_empty'},
+		type = 'shapeless',
+	})
+end
+-- End change
+
 minetest.register_craft({
 	output = 'bucket_wooden:bucket_empty 1',
 	recipe = {
@@ -8,22 +36,6 @@ minetest.register_craft({
 		{'', 'group:wood', ''},
 	}
 })
-
-if minetest.registered_items["farming:bowl"] then
-	minetest.register_craft({
-		output = 'farming:bowl 4',
-		recipe = {'bucket_wooden:bucket_empty'},
-		type = 'shapeless',
-	})
-end
-
-if minetest.registered_items["ethereal:bowl"] then
-	minetest.register_craft({
-		output = 'ethereal:bowl 4',
-		recipe = {'bucket_wooden:bucket_empty'},
-		type = 'shapeless',
-	})
-end
 
 minetest.register_craft({
 	type = "fuel",
@@ -33,6 +45,37 @@ minetest.register_craft({
 
 
 bucket_wooden = {}
+
+-- intllib
+--------------------------------------------------------------------------------
+-- Copied from TenPlus1 mod mobs:
+local path = minetest.get_modpath(minetest.get_current_modname()) .. "/"
+
+-- Check for translation method.
+local S
+if minetest.get_translator ~= nil then
+	S = minetest.get_translator("bucket_wooden") -- 5.x translation function
+else
+	if minetest.get_modpath("intllib") then
+		dofile(minetest.get_modpath("intllib") .. "/init.lua")
+		if intllib.make_gettext_pair then
+			gettext, ngettext = intllib.make_gettext_pair() -- new gettext method
+		else
+			gettext = intllib.Getter() -- old text file method
+		end
+		S = gettext
+	else -- boilerplate function
+		S = function(str, ...)
+			local args = {...}
+			return str:gsub("@%d+", function(match)
+				return args[tonumber(match:sub(2))]
+			end)
+		end
+	end
+end
+--------------------------------------------------------------------------------
+bucket_wooden.intllib = S
+--End change
 bucket_wooden.liquids = {}
 
 local function check_protection(pos, name, text)
@@ -204,7 +247,7 @@ bucket_wooden.register_liquid(
 	"default:water_flowing",
 	"bucket_wooden:bucket_water",
 	"bucket_wooden_water.png",
-	"Water Bucket",
+	"Wooden Water Bucket", -- Change: added Wooden
 	{water_bucket_wooden = 1}
 )
 
@@ -219,7 +262,7 @@ bucket_wooden.register_liquid(
 	"default:river_water_flowing",
 	"bucket_wooden:bucket_river_water",
 	"bucket_wooden_river_water.png",
-	"River Water Bucket",
+	"Wooden River Water Bucket", -- Change: added Wooden
 	{water_bucket_wooden = 1},
 	true
 )

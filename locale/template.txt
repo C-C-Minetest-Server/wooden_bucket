@@ -1,0 +1,4 @@
+# textdomain: bucket_wooden
+Empty Wooden Bucket=
+Wooden Water Bucket=
+Wooden River Water Bucket=
