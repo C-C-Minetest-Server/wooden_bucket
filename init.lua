@@ -91,6 +91,11 @@ local function check_protection(pos, name, text)
 	return false
 end
 
+local function log_action(pos, name, action)
+	minetest.log("action", (name ~= "" and name or "A mod")
+		.. " " .. action .. " at " .. minetest.pos_to_string(pos) .. " with a wooden bucket")
+end
+
 -- Register a new liquid
 --    source = name of the source node
 --    flowing = name of the flowing node
@@ -159,13 +164,13 @@ function bucket_wooden.register_liquid(source, flowing, itemname, inventory_imag
 					end
 				end
 
-				if check_protection(lpos, user
-						and user:get_player_name()
-						or "", "place "..source) then
+				local pname = user and user:get_player_name() or ""
+				if check_protection(lpos, pname, "place "..source) then
 					return
 				end
 
 				minetest.set_node(lpos, {name = source})
+				log_action(lpos, pname, "placed " .. source)
 				return ItemStack("bucket_wooden:bucket_empty")
 			end
 		})
@@ -186,6 +191,7 @@ minetest.register_craftitem("bucket_wooden:bucket_empty", {
 			return
 		end
 		-- Check if pointing to a liquid source
+		local pos = pointed_thing.under
 		local node = minetest.get_node(pointed_thing.under)
 		local liquiddef = bucket_wooden.liquids[node.name]
 		local item_count = user:get_wielded_item():get_count()
@@ -193,9 +199,8 @@ minetest.register_craftitem("bucket_wooden:bucket_empty", {
 		if liquiddef ~= nil
 		and liquiddef.itemname ~= nil
 		and node.name == liquiddef.source then
-			if check_protection(pointed_thing.under,
-					user:get_player_name(),
-					"take ".. node.name) then
+			local pname = user:get_player_name()
+			if check_protection(pos, pname, "take ".. node.name) then
 				return
 			end
 
@@ -210,9 +215,9 @@ minetest.register_craftitem("bucket_wooden:bucket_empty", {
 				if inv:room_for_item("main", {name=liquiddef.itemname}) then
 					inv:add_item("main", liquiddef.itemname)
 				else
-					local pos = user:get_pos()
-					pos.y = math.floor(pos.y + 0.5)
-					minetest.add_item(pos, liquiddef.itemname)
+					local upos = user:get_pos()
+					upos.y = math.floor(upos.y + 0.5)
+					minetest.add_item(upos, liquiddef.itemname)
 				end
 
 				-- set to return empty buckets minus 1
@@ -223,11 +228,13 @@ minetest.register_craftitem("bucket_wooden:bucket_empty", {
 			-- force_renew requires a source neighbour
 			local source_neighbor = false
 			if liquiddef.force_renew then
-				source_neighbor =
-					minetest.find_node_near(pointed_thing.under, 1, liquiddef.source)
+				source_neighbor = minetest.find_node_near(pos, 1, liquiddef.source)
 			end
-			if not (source_neighbor and liquiddef.force_renew) then
-				minetest.add_node(pointed_thing.under, {name = "air"})
+			if source_neighbor and liquiddef.force_renew then
+				log_action(pos, pname, "picked up " .. liquiddef.source .. " (force renewed)")
+			else
+				minetest.add_node(pos, {name = "air"})
+				log_action(pos, pname, "picked up " .. liquiddef.source)
 			end
 
 			return ItemStack(giving_back)
@@ -235,7 +242,7 @@ minetest.register_craftitem("bucket_wooden:bucket_empty", {
 			-- non-liquid nodes will have their on_punch triggered
 			local node_def = minetest.registered_nodes[node.name]
 			if node_def then
-				node_def.on_punch(pointed_thing.under, node, user, pointed_thing)
+				node_def.on_punch(pos, node, user, pointed_thing)
 			end
 			return user:get_wielded_item()
 		end
