@@ -173,7 +173,7 @@ function bucket_wooden.register_liquid(source, flowing, itemname, inventory_imag
 end
 
 minetest.register_craftitem("bucket_wooden:bucket_empty", {
-	description = "Empty Wooden Bucket",
+	description = S("Empty Wooden Bucket"),
 	inventory_image = "bucket_wooden.png",
 	stack_max = 99,
 	liquids_pointable = true,
@@ -247,7 +247,7 @@ bucket_wooden.register_liquid(
 	"default:water_flowing",
 	"bucket_wooden:bucket_water",
 	"bucket_wooden_water.png",
-	"Wooden Water Bucket", -- Change: added Wooden
+	S("Wooden Water Bucket"), -- Change: added Wooden
 	{water_bucket_wooden = 1}
 )
 
@@ -262,7 +262,7 @@ bucket_wooden.register_liquid(
 	"default:river_water_flowing",
 	"bucket_wooden:bucket_river_water",
 	"bucket_wooden_river_water.png",
-	"Wooden River Water Bucket", -- Change: added Wooden
+	S("Wooden River Water Bucket"), -- Change: added Wooden
 	{water_bucket_wooden = 1},
 	true
 )

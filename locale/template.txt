@@ -1,4 +1,6 @@
 # textdomain: bucket_wooden
+
+##[ init.lua ]##
 Empty Wooden Bucket=
 Wooden Water Bucket=
 Wooden River Water Bucket=
